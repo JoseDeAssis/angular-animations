@@ -4,24 +4,37 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { TarefaService } from 'src/app/service/tarefa.service';
 import { Tarefa } from '../interface/tarefa';
+import { checkButtonTrigger, filterTrigger, formButtonTrigger, highlightedStateTrigger, notFoundTrigger, shakeTrigger, shownStateTrigger } from '../animations';
 
 @Component({
   selector: 'app-lista-tarefas',
   templateUrl: './lista-tarefas.component.html',
-  styleUrls: ['./lista-tarefas.component.css']
+  styleUrls: ['./lista-tarefas.component.css'],
+  animations: [
+    highlightedStateTrigger,
+    shownStateTrigger,
+    checkButtonTrigger,
+    filterTrigger,
+    formButtonTrigger,
+    notFoundTrigger,
+    shakeTrigger
+  ]
 })
 export class ListaTarefasComponent implements OnInit {
   listaTarefas: Tarefa[] = [];
   formAberto: boolean = false;
   categoria: string = '';
   validado: boolean = false;
+  indexTarefa: number = -1
+  campoBusca: string = ''
+  tarefasFiltradas: Tarefa[] = []
 
   formulario: FormGroup = this.fomBuilder.group({
     id: [0],
     descricao: ['', Validators.required],
     statusFinalizado: [false, Validators.required],
-    categoria: ['', Validators.required],
-    prioridade: ['', Validators.required],
+    categoria: ['Casa', Validators.required],
+    prioridade: ['Alta', Validators.required],
   });
 
   constructor(
@@ -33,6 +46,7 @@ export class ListaTarefasComponent implements OnInit {
   ngOnInit(): Tarefa[] {
     this.service.listar(this.categoria).subscribe((listaTarefas) => {
       this.listaTarefas = listaTarefas;
+      this.tarefasFiltradas = listaTarefas
     });
     return this.listaTarefas;
   }
@@ -116,7 +130,7 @@ export class ListaTarefasComponent implements OnInit {
 
   listarAposCheck() {
     this.service.listar(this.categoria).subscribe((listaTarefas) => {
-      this.listaTarefas = listaTarefas;
+      this.tarefasFiltradas = listaTarefas;
     });
   }
 
@@ -136,6 +150,16 @@ export class ListaTarefasComponent implements OnInit {
     } else {
       this.validado = true;
       return 'form-tarefa';
+    }
+  }
+
+  filtrarTarefasPorDescricao(descricao: string) {
+    this.campoBusca = descricao.trim().toLowerCase();
+
+    if(descricao) {
+      this.tarefasFiltradas = this.listaTarefas.filter(tarefa => tarefa.descricao.toLocaleLowerCase().includes(this.campoBusca))
+    } else {
+      this.tarefasFiltradas = this.listaTarefas
     }
   }
 }
