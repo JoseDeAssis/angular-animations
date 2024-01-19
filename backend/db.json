@@ -31,16 +31,16 @@
     {
       "id": 6,
       "descricao": "Ler",
-      "statusFinalizado": false,
+      "statusFinalizado": true,
       "categoria": "Estudos",
       "prioridade": "Alta"
     },
     {
       "id": 7,
-      "descricao": "conseguir um emprego",
+      "descricao": "preparar aventura de call of cthulhu",
+      "categoria": "Casa",
       "statusFinalizado": false,
-      "categoria": "Trabalho",
-      "prioridade": "Alta"
+      "prioridade": "Normal"
     }
   ]
 }
